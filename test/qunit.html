@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html class="no-js"><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>jQuery SuperDOM Test</title>
+  <link rel="stylesheet"
+        href="http://code.jquery.com/qunit/qunit-1.12.0.css" />
+</head><body>
+<svg width="100" height="100" style="display: none">
+  <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow"
+          class="class1" />
+</svg>
+
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+<script src="../jquery.superdom.js"></script>
+<script>
+var $circle = $('circle');
+
+test('basic svg', function () {
+  equal($.fn.superdom.version, '0.0.1', 'Expect proper version.');
+
+  equal($('circle').length, 1, 'Expect to select by tag name.');
+  equal($('.class1').length, 1, 'Expect to select by class name.');
+
+  $circle.addClass('class0');
+  ok($('.class1.class0').length, 'Expect to select by multiple class name.');
+  $circle.removeClass('class0'); // reset
+
+  equal($circle.attr('class'), 'class1', 'Expected .attr to work.');
+});
+
+test('hasClass', function () {
+  ok($circle.length, 'Expect a selection.');
+  ok($circle.hasClass('class1'), 'Expect present class.');
+  ok(!$circle.hasClass('class0'), 'Do not expect missing class.');
+});
+
+test('addClass', function () {
+  var oldClasses, newClasses;
+
+  // Signature 1
+  $circle.addClass('class2');
+  ok($circle.hasClass('class2'), 'Expect new class added.');
+
+  oldClasses = $circle[0].getAttribute('class');
+  $circle.addClass('class2');
+  newClasses = $circle[0].getAttribute('class');
+  equal(newClasses, oldClasses, 'Do not expect classes to be duplicated.');
+
+  $circle.removeClass('class2'); // reset
+
+  // Signature 2
+  $circle.addClass(function (i, currentClass) {
+    equal(i, 0, 'Expect only a single item.');
+    equal(currentClass, 'class1', 'Expect no other classes.');
+
+    return 'class3';
+  });
+
+  ok($circle.hasClass('class3'), 'Expect class added from function.');
+
+  $circle.removeClass('class3'); // reset
+});
+
+test('removeClass', function () {
+  $circle.addClass('class4');
+
+  // Signature 1
+  $circle.removeClass('class4');
+  ok(!$circle.hasClass('class4'), 'Expect to remove classes.');
+
+  // Signature 2
+  $circle.removeClass(function (i, currentClass) {
+    equal(i, 0, 'Expect only a single item.');
+    equal(currentClass, 'class1', 'Expect no other classes.');
+
+    return this.getAttribute('class');
+  });
+
+  ok(!$circle.hasClass('class1'), 'Expect class removed from function.');
+
+  $circle.addClass('class1');
+});
+
+test('toggleClass', function () {
+  // Signature 1
+  var hasClass = $circle.hasClass('class5');
+  $circle.toggleClass('class5');
+  equal($circle.hasClass('class5'), !hasClass, 'Expect to toggle class.');
+  $circle.toggleClass('class5'); // reset
+
+  // Signature 2
+  $circle.toggleClass('class6', true);
+  ok($circle.hasClass('class6'), 'Expect to add class.');
+
+  $circle.toggleClass('class6', false);
+  ok(!$circle.hasClass('class6'), 'Expect to remove class.');
+
+  // Signature 3
+  $circle.toggleClass();
+  equal($circle.attr('class'), '', 'Expect all classes removed.');
+  $circle.toggleClass(); // reset
+  notEqual($circle.attr('class'), '', 'Expect classes restored.');
+
+  $circle.toggleClass(false);
+  equal($circle.attr('class'), '', 'Expect all classes removed.');
+
+  $circle.toggleClass(true);
+  notEqual($circle.attr('class'), '', 'Expect classes restored.');
+
+  // Signature 4
+  var func = function (index, className, stateVal) { return 'class7'; };
+
+  $circle.toggleClass(func);
+  ok($circle.hasClass('class7'), 'Expect class added.');
+
+  $circle.toggleClass(func);
+  ok(!$circle.hasClass('class7'), 'Expect class removed.');
+
+  $circle.toggleClass(func, true);
+  ok($circle.hasClass('class7'), 'Expect class added.');
+
+  $circle.toggleClass(func, false);
+  ok(!$circle.hasClass('class7'), 'Expect class removed.');
+});
+</script>
+</body></html>
