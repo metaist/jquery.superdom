@@ -1,41 +1,175 @@
 <!DOCTYPE html>
 <html class="no-js"><head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>jQuery SuperDOM Test</title>
-  <link rel="stylesheet"
-        href="http://code.jquery.com/qunit/qunit-1.12.0.css" />
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>jQuery SuperDOM Test</title>
+<link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.12.0.css" />
 </head><body>
 <svg width="100" height="100" style="display: none">
   <circle cx="50" cy="50" r="40" stroke="green" stroke-width="4" fill="yellow"
           class="class1" />
 </svg>
+<math style="display: none"></math>
 
-  <div id="qunit"></div>
-  <div id="qunit-fixture"></div>
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
 
-<script src="http://code.jquery.com/jquery.min.js"></script>
-<script src="http://code.jquery.com/qunit/qunit-1.12.0.js"></script>
+<script src="http://code.jquery.com/jquery.js"></script>
+<script src="http://code.jquery.com/qunit/qunit-1.14.0.js"></script>
 <script src="../jquery.superdom.js"></script>
 <script>
-var $circle = $('circle');
+var $svg = $('svg'),
+  $circle = $('circle'),
+  $math = $('math'),
+  math_supported = $math.hasNS('math');
 
-test('basic svg', function () {
-  equal($.fn.superdom.version, '0.0.1', 'Expect proper version.');
+test('version', function () {
+  equal($.superdom.version, '0.0.2', 'Expect proper version.');
+});
 
-  equal($('circle').length, 1, 'Expect to select by tag name.');
-  equal($('.class1').length, 1, 'Expect to select by class name.');
+test('namespaces', function () {
+  ok($.ns.xhtml, 'Expect XHTML namespace.');
+  ok($.ns.svg, 'Expect SVG namespace.');
+  ok(!$.ns.foo, 'Expect missing namespace to be empty.');
+});
+
+module('svg');
+test('find', function () {
+  equal($('circle').length, 1, 'Expect to find by tag name.');
+  equal($('.class1').length, 1, 'Expect to find by class name.');
 
   $circle.addClass('class0');
-  ok($('.class1.class0').length, 'Expect to select by multiple class name.');
-  $circle.removeClass('class0'); // reset
+  ok($('.class1.class0').length, 'Expect to find by multiple class name.');
 
-  equal($circle.attr('class'), 'class1', 'Expected .attr to work.');
+  $circle.removeClass('class0'); // cleanup
+});
+
+test('attr', function () {
+  var save = {cx: $circle.attr('cx'), cy: $circle.attr('cy')};
+
+  $circle.attr('cx', 200);
+  equal($circle.attr('cx'), '200', 'Expected multiple attr to work.');
+
+  $circle.attr({cx: 100, cy: 150});
+  equal($circle.attr('cx'), '100', 'Expected multiple attr to work.');
+  equal($circle.attr('cy'), '150', 'Expected multiple attr to work.');
+
+  $circle.attr(save); // cleanup
+});
+
+test('createDOM', function () {
+  var lorem = 'lorem ipsum',
+      $text = $('<svg:text />')
+        .attr('id', 'test-id')
+        .text(lorem);
+
+  equal($text.length, 1, 'Expect to create a single tag.');
+  equal($text.text(), lorem, 'Expect to set text content.');
+
+  equal($text.attr('id'), 'test-id', 'Expect correct attribute value.');
+  ok($text.hasNS($.ns.svg), 'Expect SVG namespace.');
+
+  $text.appendTo($svg);
+  ok($('text')[0], 'Expect <text> fragment to be added.');
+
+  $text.remove(); // cleanup
+});
+
+test('buildFragment', function () {
+var lorem = 'lorem ipsum',
+  $text = $('<svg:text>fragment:' + lorem + '</svg:text>');
+
+  ok($text[0], 'Expect synthesized node.');
+  ok($text.hasNS('svg'),'Expect SVG fragment namespace.');
+
+  $text.appendTo($svg);
+  ok($('text')[0], 'Expect <text> fragment to be added.');
+  $text.remove(); // cleanup
+
+  $text = $('<svg:rect width="250" height="250" style="fill:blue">' +
+            '<svg:animate attributeType="CSS" attributeName="opacity" ' +
+            'from="1" to="0" dur="5s" repeatCount="indefinite" />' +
+            '</svg:rect>');
+  $text.appendTo($svg);
+  ok($('rect animate')[0], 'Expect <animate> to be added.');
+
+  $text.remove(); // cleanup
+});
+
+module('xml');
+test('buildFragment', function () {
+  var $node = $('<xml:root />').append('<xml:row>some content</xml:row>');
+  ok($node[0], 'Expect fragment to exist.');
+  ok($node.hasNS('xml'), 'Expect XML namespace.');
+});
+
+module('mathml');
+test('buildFragment', function () {
+  $.extend($.ns, {math: 'http://www.w3.org/1998/Math/MathML'});
+  var $node = $math.append(
+    '<math:mrow>a &#x02062; <math:msup><math:mi>x</math:mi>' +
+    '<math:mn>2</math:mn></math:msup> + b</math:mrow>'
+  ).find('mn');
+
+  ok($node[0], 'Expect nested node to exist.');
+  ok($node.hasNS('math'), 'Expect MathML namespace.');
+});
+
+module('html');
+test('buildFragment', function () {
+  var $text = $('<div>html fragment</div>');
+
+  ok($text[0], 'Expect synthesized node.');
+  ok($text.hasNS('xhtml'),'Expect HTML fragment namespace.');
+
+  $text.insertAfter($svg);
+  ok($text[0], 'Expect node to be attached.');
+
+  $text.remove(); // cleanup
+});
+
+module('options');
+test('keepNSPrefix', function () {
+  var $t1, $t2, dom, save = $.superdom.options.keepNSPrefix;
+
+  $.superdom.options.keepNSPrefix = false;
+  $t1 = $('<svg:text />').appendTo($svg);
+  dom = $t1[0];
+  equal(dom.nodeName, 'text', 'Expect tag namespace to be removed.');
+
+  $.superdom.options.keepNSPrefix = true;
+  $t2 = $('<svg:text />').appendTo($svg);
+  dom = $t2[0];
+  equal(dom.nodeName, 'svg:text', 'Expect tag namespace to be preserved.');
+
+  equal($('*|text').length, 2, 'Expected both tags to match tag filter.');
+  equal($('svg\\:text,text').length, 2, 'Expected both tags to match tag filter.');
+
+  // cleanup
+  $t1.add($t2).remove();
+  $.superdom.options.keepNSPrefix = save;
+});
+
+module('fn');
+test('hasNS', function () {
+  ok($svg.hasNS($.ns.svg), 'Expect SVG namespace.');
+  ok($circle.hasNS('svg'), 'Expect SVG namespace.');
+  ok($('div').hasNS('xhtml'), 'Expect XHTML namespace.');
+  ok(!$('div').hasNS('svg'), 'Do not expect namespace.');
+});
+
+test(':ns', function () {
+  var $nodes = $(':ns(svg)'), check = $nodes.hasNS($.ns.svg);
+  $nodes.each(function () {
+    if (this.namespaceURI !== $.ns.svg) { check = false; }
+  });
+
+  ok(check, 'Expect all nodes to be in the SVG namespace.');
 });
 
 test('hasClass', function () {
   ok($circle.length, 'Expect a selection.');
-  ok($circle.hasClass('class1'), 'Expect present class.');
+  ok($circle.hasClass('class1'), 'Expect class to be found.');
   ok(!$circle.hasClass('class0'), 'Do not expect missing class.');
 });
 
@@ -56,7 +190,7 @@ test('addClass', function () {
   // Signature 2
   $circle.addClass(function (i, currentClass) {
     equal(i, 0, 'Expect only a single item.');
-    equal(currentClass, 'class1', 'Expect no other classes.');
+    equal(currentClass, 'class1', 'Do not expect other classes.');
 
     return 'class3';
   });
@@ -76,7 +210,7 @@ test('removeClass', function () {
   // Signature 2
   $circle.removeClass(function (i, currentClass) {
     equal(i, 0, 'Expect only a single item.');
-    equal(currentClass, 'class1', 'Expect no other classes.');
+    equal(currentClass, 'class1', 'Do not expect other classes.');
 
     return this.getAttribute('class');
   });

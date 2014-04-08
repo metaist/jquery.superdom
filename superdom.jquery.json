@@ -1,0 +1,26 @@
+{
+  "name": "superdom",
+  "version": "0.0.2",
+  "title": "jQuery SuperDOM",
+  "description": "jQuery plugin for DOM operations in non-XHTML namespaces.",
+  "keywords": [
+    "dom",
+    "svg",
+    "mathml"
+  ],
+  "author": {
+    "name": "metaist",
+    "url": "https://github.com/metaist"
+  },
+  "licenses": [{
+    "type": "MIT",
+    "url": "http://opensource.org/licenses/MIT"
+  }],
+  "dependencies": {
+    "jquery": ">=1.8"
+  },
+  "docs": "https://github.com/metaist/jquery.superdom",
+  "download": "https://github.com/metaist/jquery.superdom/archive/master.zip",
+  "bugs": "https://github.com/metaist/jquery.superdom/issues",
+  "homepage": "https://github.com/metaist/jquery.superdom"
+}
