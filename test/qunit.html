@@ -16,7 +16,7 @@
 
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="http://code.jquery.com/qunit/qunit-1.14.0.js"></script>
-<script src="../jquery.superdom.js"></script>
+<script src="../jquery.superdom.min.js"></script>
 <script>
 var $svg = $('svg'),
   $circle = $('circle'),
@@ -24,7 +24,7 @@ var $svg = $('svg'),
   math_supported = $math.hasNS('math');
 
 test('version', function () {
-  equal($.superdom.version, '0.0.2', 'Expect proper version.');
+  equal($.superdom.version, '0.0.3', 'Expect proper version.');
 });
 
 test('namespaces', function () {
@@ -109,16 +109,22 @@ test('buildFragment', function () {
   var $node = $math.append(
     '<math:mrow>a &#x02062; <math:msup><math:mi>x</math:mi>' +
     '<math:mn>2</math:mn></math:msup> + b</math:mrow>'
-  ).find('mn');
+  ), $mn = $node.find('mn');
 
-  ok($node[0], 'Expect nested node to exist.');
-  ok($node.hasNS('math'), 'Expect MathML namespace.');
+  ok($mn[0], 'Expect nested node to exist.');
+  ok($mn.hasNS('math'), 'Expect MathML namespace.');
+
+  $node.remove(); // cleanup
 });
 
 module('html');
 test('buildFragment', function () {
-  var $text = $('<div>html fragment</div>');
+  var $text = $('<a>');
 
+  //See #1
+  equal($text[0].nodeName.toUpperCase(), 'A', 'Expect single-letter tag.');
+
+  $text = $('<div>html fragment</div>');
   ok($text[0], 'Expect synthesized node.');
   ok($text.hasNS('xhtml'),'Expect HTML fragment namespace.');
 

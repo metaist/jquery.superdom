@@ -1,4 +1,4 @@
-/*! SuperDOM jQuery Plugin v0.0.2 | (c) 2014 Metaist | http://opensource.org/licenses/MIT */
+/*! SuperDOM jQuery Plugin v0.0.3 | (c) 2014 Metaist | http://opensource.org/licenses/MIT */
 /*jslint indent: 2, maxlen: 80, browser: true */
 /*global require, define, jQuery: false */
 (function (factory) {
@@ -18,7 +18,8 @@
     rnotwhite = /\S+/g,
     rscriptType = /^$|\/(?:java|ecma)script/i,
     //rsingleTag = (/^<(\w+)\s*\/?>(?:<\/\1>|)$/);
-    rsingletag = /^<(\w+:?\w+)\s*\/?>(?:<\/\1>|)$/, //SUPERDOM: namespace-aware
+    //SUPERDOM: namespace-aware
+    rsingletag = /^<((\w+:)?\w+)\s*\/?>(?:<\/\1>|)$/,
     rtagName = /<([\w:]+)/,
     rtagNameNS = /\w+:\w+/g, //SUPERDOM: namespace-aware
     rnodeNameNS = /(\w+:)?(\w+)/, //SUPERDOM: namespace-aware
@@ -237,7 +238,7 @@
 
     plugin = {
       superdom: {
-        version: '0.0.2',
+        version: '0.0.3',
         options: {
           keepNSPrefix: false // true = keep namespace prefix in tag names
         },

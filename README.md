@@ -37,10 +37,9 @@ Select nodes by namespace and check if a node is in a namespace:
     $('a:ns(http://www.w3.org/2000/svg)');
     $('text').hasNS('svg');
 
-
 ## Similar Efforts
-  - [SVG DOM][svgdom] by Keith Wood
-  - [SVG][svg-fn] function by Ben Olson
+  - [SVG DOM][svgdom] by Keith Wood (more of a jQuery re-write)
+  - [SVG][svg-fn] function by Ben Olson (only creates SVG nodes)
 
 ## License
 Licensed under the [MIT License][mit].
@@ -48,6 +47,7 @@ Licensed under the [MIT License][mit].
 [html-a]: https://developer.mozilla.org/en-US/docs/Web/API/HTMLAnchorElement
 [jquery-wontfix]: http://contribute.jquery.org/wont-fix/#svg-vml-or-namespaced-elements-bugs
 [jquery]: https://github.com/jquery/jquery
+[jquery-boolean]: http://api.jquery.com/Types/#Boolean
 [svg-a]: https://developer.mozilla.org/en-US/docs/Web/API/SVGAElement
 [svgdom]: http://keith-wood.name/svg.html#dom
 [svg-fn]: http://www.benknowscode.com/2012/09/using-svg-elements-with-jquery_6812.html
