@@ -1,4 +1,4 @@
-/*! jQuery SuperDOM v0.0.4-pre | (c) 2014 metaist | http://opensource.org/licenses/MIT */
+/*! jQuery SuperDOM v0.0.4 | (c) 2014 metaist | http://opensource.org/licenses/MIT */
 (function (factory) {
   'use strict';
   if ('function' === typeof define && define.amd) {
@@ -243,7 +243,7 @@
 
     plugin = {
       superdom: {
-        version: '0.0.4-pre',
+        version: '0.0.4',
         options: {
           keepNSPrefix: false // true = keep namespace prefix in tag names
         },
