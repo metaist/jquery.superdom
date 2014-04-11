@@ -1,6 +1,4 @@
-/*! SuperDOM jQuery Plugin v0.0.4-pre | (c) 2014 Metaist | http://opensource.org/licenses/MIT */
-/*jslint indent: 2, maxlen: 80, browser: true */
-/*global require, define, jQuery: false */
+/*! jQuery SuperDOM v0.0.4-pre | (c) 2014 metaist | http://opensource.org/licenses/MIT*/
 (function (factory) {
   'use strict';
   if ('function' === typeof define && define.amd) {
@@ -86,7 +84,7 @@
 
       if (!found) {
         for (found = [], elems = context.childNodes || context;
-             (elem = elems[i]) != null; i++) {
+             (elem = elems[i]) != null; i++) { 11// jshint ignore:line
           if (!tag || $.nodeName(elem, tag)) {
             found.push(elem);
           } else {
@@ -110,7 +108,7 @@
     // Mark scripts as having already been evaluated
     setGlobalEval = function (elems, refElements) {
       var elem, i = 0;
-      for (; (elem = elems[i]) != null; i++) {
+      for (; (elem = elems[i]) != null; i++) { // jshint ignore:line
         $._data(elem, "globalEval",
                 !refElements || $._data(refElements[i], 'globalEval'));
       }

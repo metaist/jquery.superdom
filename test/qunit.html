@@ -16,7 +16,7 @@
 
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="http://code.jquery.com/qunit/qunit-1.14.0.js"></script>
-<script src="../jquery.superdom.js"></script>
+<script src="../dist/jquery.superdom.min.js"></script>
 <script>
 var $svg = $('svg'),
   $circle = $('circle'),
@@ -24,7 +24,8 @@ var $svg = $('svg'),
   math_supported = $math.hasNS('math');
 
 test('version', function () {
-  equal($.superdom.version, '0.0.3', 'Expect proper version.');
+  var pattern = /^0\.0\.4(-.*)?$/
+  ok(pattern.exec($.superdom.version), 'Expect semver format.');
 });
 
 test('namespaces', function () {
