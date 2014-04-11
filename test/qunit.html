@@ -16,7 +16,7 @@
 
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="http://code.jquery.com/qunit/qunit-1.14.0.js"></script>
-<script src="../jquery.superdom.min.js"></script>
+<script src="../jquery.superdom.js"></script>
 <script>
 var $svg = $('svg'),
   $circle = $('circle'),
@@ -107,7 +107,7 @@ module('mathml');
 test('buildFragment', function () {
   $.extend($.ns, {math: 'http://www.w3.org/1998/Math/MathML'});
   var $node = $math.append(
-    '<math:mrow>a &#x02062; <math:msup><math:mi>x</math:mi>' +
+    '<math:mrow>a &InvisibleTimes; <math:msup><math:mi>x</math:mi>' +
     '<math:mn>2</math:mn></math:msup> + b</math:mrow>'
   ), $mn = $node.find('mn');
 
@@ -123,6 +123,10 @@ test('buildFragment', function () {
 
   //See #1
   equal($text[0].nodeName.toUpperCase(), 'A', 'Expect single-letter tag.');
+
+  //See #2
+  $text = $('<span>&times;</span>');
+  equal($text[0].innerHTML, '\u00D7', 'Expect parsed named entities.');
 
   $text = $('<div>html fragment</div>');
   ok($text[0], 'Expect synthesized node.');

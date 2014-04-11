@@ -1,4 +1,4 @@
-/*! SuperDOM jQuery Plugin v0.0.3 | (c) 2014 Metaist | http://opensource.org/licenses/MIT */
+/*! SuperDOM jQuery Plugin v0.0.4-pre | (c) 2014 Metaist | http://opensource.org/licenses/MIT */
 /*jslint indent: 2, maxlen: 80, browser: true */
 /*global require, define, jQuery: false */
 (function (factory) {
@@ -176,14 +176,21 @@
       namespaces incorporated into it.
       @see $.buildFragment
     */
+    DOCTYPE = '<!DOCTYPE data PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' +
+              '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
     superParse = function (txt) {
-      var doc, str = '<root xmlns="' + $.ns.xhtml + '" ';
+      var doc,
+        str = DOCTYPE +  '<root xmlns="' + $.ns.xhtml + '" ';
       $.each($.ns, function (prefix, ns) {
         if ('xmlns' === prefix) { return; }
         str += 'xmlns:' + prefix + '="' + ns + '" ';
       });
       str += '>' + txt + '</root>';
-      doc = $.parseXML(str);
+      try {
+        doc = $.parseXML(str);
+      } catch (e) {
+        $.error('Error parsing XML.');
+      }//end try: maybe have a parsed document
       return doc && doc.documentElement;
     },
 
@@ -238,7 +245,7 @@
 
     plugin = {
       superdom: {
-        version: '0.0.3',
+        version: '0.0.4-pre',
         options: {
           keepNSPrefix: false // true = keep namespace prefix in tag names
         },

@@ -1,6 +1,6 @@
 {
   "name": "superdom",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "title": "jQuery SuperDOM",
   "description": "jQuery plugin for DOM operations in non-XHTML namespaces.",
   "keywords": [
