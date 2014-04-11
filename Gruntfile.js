@@ -14,10 +14,10 @@ module.exports = function (grunt) {
     banner:
       '/*! <%= pkg.title %> v<%= pkg.version %> | ' +
       '(c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %> | ' +
-      '<%= pkg.licenses[0].url %>*/',
+      '<%= pkg.licenses[0].url %> */',
 
     /* Clean */
-    clean: ['dist', names.pluginpkg + '.json'],
+    clean: ['dist', names.pluginpkg + '.json', names.src + '-*.zip'],
 
     /* Concat */
     concat: {
@@ -54,6 +54,18 @@ module.exports = function (grunt) {
       all: ['test/**/*.html']
     },
 
+    /* Compress */
+    compress: {
+      main: {
+        options: {
+          archive: [names.src, pkg.version].join('-') + '.zip'
+        },
+        expand: true,
+        cwd: 'dist/',
+        src: ['**'],
+        dest: './'
+      }
+    },
     /* Uglify */
     uglify: {
       all: {
@@ -81,10 +93,12 @@ module.exports = function (grunt) {
 
   require('load-grunt-tasks')(grunt); // load grunt tasks
 
-  grunt.registerTask('default', ['test', 'package']);
-  grunt.registerTask('test', ['jsonlint', 'jshint', 'build', 'qunit']);
-  grunt.registerTask('build', ['clean', 'concat', 'uglify']);
-  grunt.registerTask('package', function () {
+  grunt.registerTask('default', ['build', 'test', 'package']);
+  grunt.registerTask('build', ['clean', 'jqpackage', 'concat']);
+  grunt.registerTask('test', ['jsonlint', 'jshint', 'qunit']);
+  grunt.registerTask('package', ['uglify', 'compress']);
+
+  grunt.registerTask('jqpackage', function () {
     var filename = names.pluginpkg + '.json',
         props = pkg,
         out = {};
