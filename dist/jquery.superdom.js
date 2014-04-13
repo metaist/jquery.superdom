@@ -1,4 +1,4 @@
-/*! jQuery SuperDOM v0.0.4 | (c) 2014 metaist | http://opensource.org/licenses/MIT */
+/*! jQuery SuperDOM v0.0.5 | (c) 2014 metaist | http://opensource.org/licenses/MIT */
 (function (factory) {
   'use strict';
   if ('function' === typeof define && define.amd) {
@@ -241,17 +241,60 @@
       }
     },
 
+    getProp = function (item, dotname) {
+      var parts = dotname.split('.'),
+        name = parts.slice(-1),
+        i, L = parts.length - 1;
+
+      for (i = 0; i < L; i++) { item = item[parts[i]]; }//traverse item
+      return item[name];
+    },
+
+    setProp = function (topitem, dotname, val) {
+      var result = topitem, item = topitem,
+        parts = dotname.split('.'),
+        name = parts.slice(-1)[0],
+        L = parts.length - 1;
+
+      for (var i = 0; i < L; i++) {
+        if (!item.hasOwnProperty(parts[i])) { item[parts[i]] = {}; }
+        item = item[parts[i]];
+      }//traverse item
+
+      if (!$.isPlainObject(val)) { item[name] = val;
+      } else {
+        $.each(val, function (k, v) {
+          setProp(topitem, dotname + '.' + k, v);
+        });
+      }//end if: set the object
+
+      return result;
+    },
+
     plugin = {
       superdom: {
-        version: '0.0.4',
+        version: '0.0.5',
         options: {
           keepNSPrefix: false // true = keep namespace prefix in tag names
         },
 
-        /** Revert the entire plugin. */
-        noConflict: function (removeAll) {
-          if (true === removeAll) { $.extend(true, original); }
-          return this;
+        /** Revert the entire plugin.
+            @param Array names: zero or more dotted names to remove
+        */
+        noConflict: function (names) {
+          var result = plugin;
+          if (names && 'array' !== $.type(names)) { names = [names]; }
+          if (!names || 0 === names.length) {
+            $.each(original, function (k, v) { setProp($, k, v); });
+          } else {
+            result = {};
+            $.each(names, function (i, k) {
+              setProp(result, k, getProp(plugin, k)); // save plugin fn
+              setProp($, k, getProp(original, k)); // revert control
+            });
+          }//end if: reverted some
+
+          return result;
         }
       },
 
@@ -407,9 +450,9 @@
               //$.merge(nodes, tmp.childNodes);
               //SUPERDOM: remove the namespace prefix from the DOM node
               j = tmp.childNodes.length;
-              while (j--) {
-                nodes.push(fixNSPrefix(context, tmp.childNodes[j]));
-              }//end while: fixed all nodes
+              for (var k = 0; k < j; k++) {
+                nodes.push(fixNSPrefix(context, tmp.childNodes[k]));
+              }//end for: fixed all nodes
 
               // Fix #12392 for WebKit and IE > 9
               tmp.textContent = '';
@@ -650,23 +693,6 @@
         return false;
       }//end hasClass
     };
-
-  $.each(plugin, function (name, item) {
-    if ('function' !== $.type(item)) { return; }
-    if ('superdom' === name) { return; } // already has a .noConflict
-    plugin[name].noConflict = function () {
-      $.extend(name, original[name]);
-      return this;
-    };
-  });
-
-  $.each(fn, function (name, item) {
-    if ('function' !== $.type(item)) { return; }
-    fn[name].noConflict = function () {
-      $.fn.extend(name, original.fn[name]);
-      return this;
-    };
-  });
 
   plugin.parseHTML = plugin.parseDOM;
 

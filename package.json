@@ -1,13 +1,13 @@
 {
   "name": "superdom",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "title": "jQuery SuperDOM",
   "description": "jQuery plugin for DOM operations in non-XHTML namespaces.",
   "main": "dist/jquery.superdom.js",
   "homepage": "https://github.com/metaist/jquery.superdom",
   "bugs": "https://github.com/metaist/jquery.superdom/issues",
-  "docs": "https://github.com/metaist/jquery.superdom",
-  "download": "https://github.com/metaist/jquery.superdom/archive/master.zip",
+  "docs": "https://github.com/metaist/jquery.superdom/wiki",
+  "download": "https://github.com/metaist/jquery.superdom/releases/latest",
   "repository": {
     "type": "git",
     "url": "https://github.com/metaist/jquery.superdom"
