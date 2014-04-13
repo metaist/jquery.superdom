@@ -61,8 +61,8 @@ module.exports = function (grunt) {
           archive: [names.src, pkg.version].join('-') + '.zip'
         },
         expand: true,
-        cwd: 'dist/',
-        src: ['**'],
+        flatten: true,
+        src: ['README.md', 'dist/**'],
         dest: './' + [names.src, pkg.version].join('-')
       }
     },
