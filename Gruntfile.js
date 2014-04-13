@@ -63,7 +63,7 @@ module.exports = function (grunt) {
         expand: true,
         cwd: 'dist/',
         src: ['**'],
-        dest: './'
+        dest: './' + [names.src, pkg.version].join('-')
       }
     },
     /* Uglify */
