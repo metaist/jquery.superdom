@@ -449,9 +449,9 @@
               //$.merge(nodes, tmp.childNodes);
               //SUPERDOM: remove the namespace prefix from the DOM node
               j = tmp.childNodes.length;
-              while (j--) {
-                 nodes.push(fixNSPrefix(context, tmp.childNodes[j]));
-              }//end while: fixed all nodes
+              for (var k = 0; k < j; k++) {
+                nodes.push(fixNSPrefix(context, tmp.childNodes[k]));
+              }//end for: fixed all nodes
 
               // Fix #12392 for WebKit and IE > 9
               tmp.textContent = '';

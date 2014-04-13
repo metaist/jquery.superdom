@@ -35,6 +35,24 @@ test('namespaces', function () {
   ok(!$.ns.foo, 'Expect missing namespace to be empty.');
 });
 
+test('noConflict', function () {
+  var tmp;
+
+  tmp = $.superdom.noConflict();
+  equal($.superdom, undefined, 'Expect superdom to be removed.');
+  equal($.fn.hasNS, undefined, 'Expect hasNS to be removed.');
+  $.extend(true, $, tmp); // cleanup
+  notEqual($.fn.hasNS, undefined, 'Expect hasNS to be reset.');
+
+  tmp = $.superdom.noConflict('fn.hasNS');
+  equal($.fn.hasNS, undefined, 'Expect hasNS to be removed.');
+  $.extend(true, $, tmp); // cleanup
+
+  tmp = $.superdom.noConflict('expr.:.ns');
+  equal($.expr[':'].ns, undefined, 'Expect :ns to be removed.');
+  $.extend(true, $, tmp); // cleanup
+});
+
 module('svg');
 test('find', function () {
   equal($('circle').length, 1, 'Expect to find by tag name.');
@@ -105,6 +123,11 @@ test('buildFragment', function () {
   ok($node.hasNS('xml'), 'Expect XML namespace.');
 });
 
+test('filter', function () {
+  var $node = $('<xml:row>x</xml:row><xml:col>y</xml:col>');
+  equal($node.filter('row').length, 1, 'Expect tag name filter to work.');
+});
+
 module('mathml');
 test('buildFragment', function () {
   $.extend($.ns, {math: 'http://www.w3.org/1998/Math/MathML'});
@@ -123,12 +146,17 @@ module('html');
 test('buildFragment', function () {
   var $text = $('<a>');
 
-  //See #1
-  equal($text[0].nodeName.toUpperCase(), 'A', 'Expect single-letter tag.');
+  //See #1: single tag
+  equal($text[0].nodeName.toUpperCase(), 'A', '#1: Expect single-letter tag.');
 
-  //See #2
+  //See #2: named entities
   $text = $('<span>&times;</span>');
-  equal($text[0].innerHTML, '\u00D7', 'Expect parsed named entities.');
+  equal($text[0].innerHTML, '\u00D7', '#2: Expect parsed named entities.');
+
+  //See #5: child tag order
+  $text = $('<div><span>A</span><span>B</span></div>');
+  equal($text[0].innerHTML, '<span>A</span><span>B</span>',
+        '#5: Expect child nodes in correct order.')
 
   $text = $('<div>html fragment</div>');
   ok($text[0], 'Expect synthesized node.');
