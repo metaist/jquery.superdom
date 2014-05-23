@@ -1,5 +1,6 @@
 # jquery.superdom
 [Latest Release] - [Documentation] - [Issues]
+
 _jQuery plugin for DOM operations in non-XHTML namespaces._
 
 [Latest Release]: https://github.com/metaist/jquery.superdom/releases/latest
