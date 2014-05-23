@@ -1,4 +1,4 @@
-# jquery.superdom
+# jquery.superdom [![Build Status](https://travis-ci.org/metaist/jquery.superdom.svg?branch=master)](https://travis-ci.org/metaist/jquery.superdom)
 [Latest Release] - [Documentation] - [Issues]
 
 _jQuery plugin for DOM operations in non-XHTML namespaces._
