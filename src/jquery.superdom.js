@@ -242,7 +242,7 @@
 
     getProp = function (item, dotname) {
       var parts = dotname.split('.'),
-        name = parts.slice(-1),
+        name = parts.slice(-1)[0],
         i, L = parts.length - 1;
 
       for (i = 0; i < L; i++) { item = item[parts[i]]; }//traverse item
@@ -364,6 +364,7 @@
       },
 
       /** @see jquery-1.11.0.js: 350 */
+      /** @see jquery-2.1.1.js: 341 */
       nodeName: function (elem, name) {
         return (elem.nodeName &&
                //elem.nodeName.toLowerCase() === name.toLowerCase();
@@ -373,6 +374,7 @@
       },
 
       /** @see jquery-1.11.0.js: 5514 */
+      /** @see jquery-2.1.1.js: 5060 */
       buildFragment: function (elems, context, scripts, selection) {
         var j, elem, contains,
           tmp, tag, tbody, wrap,
@@ -696,8 +698,9 @@
   plugin.parseHTML = plugin.parseDOM;
 
   // export the plugin
-  $.extend(plugin, {fn: fn});
   $.extend(true, $, plugin);
+  $.fn.extend(fn);
+  plugin.fn = fn;
 
   return plugin;
 }));

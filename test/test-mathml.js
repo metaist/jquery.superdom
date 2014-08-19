@@ -1,4 +1,5 @@
 define(function (require) {
+  require('superdom');
   var
     $ = require('jquery'),
     $svg = $('svg'),

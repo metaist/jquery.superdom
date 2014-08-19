@@ -4,3 +4,6 @@ npm-debug.log
 
 # build artifacts
 jquery.*.zip
+
+# GitHub Wiki
+/wiki

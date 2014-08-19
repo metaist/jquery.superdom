@@ -2,7 +2,6 @@
   window.xtest = function () {}; // no-op
   require.config({ baseUrl: '..' });
   require([
-    'order!src/jquery.superdom',
     'order!test-core.js',
     'order!test-svg.js',
     'order!test-xml.js',
